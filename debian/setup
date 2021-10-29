@@ -1,0 +1,4 @@
+#! /bin/bash
+
+# bash ./purge-python2.sh
+bash ./update-and-install.sh
