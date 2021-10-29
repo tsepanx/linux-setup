@@ -1,9 +1,0 @@
-openrc
-tor-openrc
-elogind-openrc
-networkmanager-openrc
-dbus-openrc
-mpd-openrc
-
-syslog-ng-openrc
-tlp-openrc
