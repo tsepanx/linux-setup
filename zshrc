@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+export EDITOR="$(if ! command -v nvim &> /dev/null; then echo 'vim'; else echo 'nvim'; fi)"
+
 export ZSH="$HOME/.zsh"
 DISABLE_AUTO_UPDATE="true"
 
