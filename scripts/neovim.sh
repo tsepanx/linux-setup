@@ -8,6 +8,9 @@ do
     [[ ! -f $f ]] && curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
 done
 
-ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
+mkdir -p $HOME/.config/nvim
+if [[ ! -e $HOME/.config/nvim/init.vim ]]; then
+    ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
+fi
 
 nvim +PlugInstall +qall
