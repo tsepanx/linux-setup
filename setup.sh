@@ -1,10 +1,13 @@
 #!/bin/bash
 
 cd $(dirname $0)
-source "./base.sh"
+# source "./base.sh"
 
 sleep_interval=1
-pacman_install="sudo pacman -S --needed"
+pacman_install="sudo pacman -S --needed --noconfirm"
+
+# no_backups="$([[ $1 == "-nb" ]] && echo 1)"
+backup_dir="$HOME/backup"
 
 repo_name="linux-setup"
 repo_url="https://github.com/tsepanx/$repo_name"
@@ -13,6 +16,44 @@ setup_script_location="scripts/"
 # dotfiles_url="https://github.com/tsepanx/dotfiles"
 dotfiles_url="git@github.com:tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
+
+ask() {
+    ask_string="${2}Continue? <$1> [s=skip]"
+    echo -en "$ask_string"
+    read ask
+    # read -p "$ask_string" ask
+
+    if [[ -z $ask || $ask == 'y' ]]; then
+        $1
+        # out="$($1)"
+        # echo $out
+    elif [[ $ask == 's' ]]; then
+        echo Skipped
+        # echo -n "S"
+        # sleep $sleep_interval
+    else
+        echo 'Exiting program'
+        exit
+    fi
+}
+
+
+backup() {
+    $pacman_install rsync
+
+    [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
+
+    res_dirname="$backup_dir$(dirname $1)"
+    if [[ ! -d $res_dirname ]]; then
+        mkdir -p $res_dirname
+    fi
+
+    echo "Backing up $1 to $res_dirname"
+    sleep $sleep_interval
+
+    # cp -r $1 $res_dirname
+    rsync -rv --exclude=.git/ $1 $res_dirname
+}
 
 distro_determine() {
     s=$(cat /etc/*-release) 
@@ -123,7 +164,7 @@ archlinux_setup() {
 }
 
 base() {
-    scripts_repo_resetup
+    # scripts_repo_resetup
 
     d=$(distro_determine)
 
