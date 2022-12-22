@@ -1,6 +1,7 @@
 [[ $(command -v pacman) ]] && sudo pacman -S --noconfirm neovim
 [[ $(command -v apt) ]] && sudo apt install -y neovim
 
+cd $(dirname $0)
 source "../base.sh"
 ask base "This will override your current setup at: $HOME/{.vimrc}\n"
 
