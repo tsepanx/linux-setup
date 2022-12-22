@@ -64,12 +64,11 @@ dots_setup() {
     if [[ ! -d $dotfiles_dir ]]; then
         git clone --bare $dotfiles_url $dotfiles_dir
     fi
-    alias git="git --git-dir=$dotfiles_dir --work-tree=$HOME"
-    git config status.showUntrackedFiles no
+    $dotfiles="git --git-dir=$dotfiles_dir --work-tree=$HOME"
+    $dotfiles config status.showUntrackedFiles no
 
-    git_restore() { git restore . ; }
+    git_restore() { $dotfiles restore . ; }
     ask git_restore
-    unalias git
 }
 
 zsh_setup() {
