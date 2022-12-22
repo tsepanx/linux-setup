@@ -1,8 +1,10 @@
 #!/bin/bash
 
 ask() {
-    ask_string="$2Continue? <$1> [s=skip]"
-    read -p $ask_string ask
+    ask_string="${2}Continue? <$1> [s=skip]"
+    echo -en "$ask_string"
+    read ask
+    # read -p "$ask_string" ask
 
     if [[ -z $ask || $ask == 'y' ]]; then
         $1
@@ -22,7 +24,7 @@ backup_dir="$HOME/backup"
 backup() {
     [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
     if [[ -d "$1" ]]; then
-        res_dirname="$backup_dir/$(dirname $1)"
+        res_dirname="$backup_dir$(dirname $1)"
         mkdir -p $res_dirname
         echo "Backing up $1 to $res_dirname"
         cp -r $1 $res_dirname
