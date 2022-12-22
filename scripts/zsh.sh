@@ -1,13 +1,14 @@
 # yay -S --needed --noconfirm zsh zsh-syntax-highlighting zsh-autosuggestions 
-[[ $(command -v pacman) ]] && sudo pacman -S --needed --noconfirm zsh
-[[ $(command -v apt) ]] && sudo apt install -y zsh
 
 cd $(dirname $0)
 source "./base.sh"
-ask base "This will override your current setup at: $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
 
-base () {
-    backup "$HOME/.zsh"
+[[ $(command -v pacman) ]] && $pacman_install zsh
+
+zsh_base () {
+    dir="$HOME/.zsh"
+    backup $dir
+    rm -rf $dir
 
     git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.zsh
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-syntax-highlighting
@@ -22,4 +23,4 @@ base () {
     chsh -s /usr/bin/zsh
 }
 
-base
+ask zsh_base "This will override your current setup at: $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"

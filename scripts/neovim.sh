@@ -1,24 +1,29 @@
-[[ $(command -v pacman) ]] && sudo pacman -S --noconfirm neovim
-[[ $(command -v apt) ]] && sudo apt install -y neovim
+#!/bin/bash
 
 cd $(dirname $0)
 source "./base.sh"
-ask base "This will override your current setup at: $HOME/{.vimrc}\n"
 
-curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+[[ $(command -v pacman) ]] && $pacman_install neovim
 
-for f in .vimrc
-do
-    backup "$HOME/$f"
-    curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
-done
 
-mkdir -p $HOME/.config/nvim
+neovim_base() {
+    curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-nvimrc=$HOME/.config/nvim/init.vim
-backup $nvimrc
-rm $nvimrc
+    for f in .vimrc
+    do
+        backup "$HOME/$f"
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+    done
 
-ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
+    mkdir -p $HOME/.config/nvim
 
-nvim +PlugInstall +qall
+    nvimrc=$HOME/.config/nvim/init.vim
+    backup $nvimrc
+    rm $nvimrc
+
+    ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
+
+    nvim +PlugInstall +qall
+}
+
+ask neovim_base "This will override your current setup at: $HOME/{.vimrc}\n"

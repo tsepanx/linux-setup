@@ -3,7 +3,7 @@
 cd $(dirname $0)
 source "./base.sh"
 
-main() {
+ranger_base() {
     dir=".config/ranger"
     backup $HOME/$dir
     rm -rf $HOME/$dir
@@ -25,5 +25,4 @@ main() {
     done
 }
 
-ask_string="This will override your current setup at: $HOME/.config{plugins/,rc.conf,commands.py}\n"
-ask main "$ask_string"
+ask ranger_base "This will override your current setup at: $HOME/.config{plugins/,rc.conf,commands.py}\n"

@@ -8,7 +8,7 @@ pacman_install="sudo pacman -S --needed"
 
 repo_name="linux-setup"
 repo_url="https://github.com/tsepanx/$repo_name"
-setup_script_location="scripts"
+setup_script_location="scripts/"
 
 dotfiles_url="https://github.com/tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
@@ -22,8 +22,8 @@ distro_determine() {
     fi
 }
 
-scripts_repo_setup() {
-    if [[ ! -d "scripts" ]]; then
+scripts_repo_resetup() {
+    if [[ ! -f "./base.sh" ]]; then
         new_dir="$HOME/${repo_name}_$(date +'%Y%m%d_%H%M%S')"
         git clone $repo_url $new_dir
         echo "Entrying the same script with repo: $new_dir"
@@ -54,25 +54,31 @@ dots_setup() {
     dotfiles="git --git-dir=$dotfiles_dir --work-tree=$HOME"
     $dotfiles config status.showUntrackedFiles no
 
-    git_restore() { $dotfiles restore $HOME/. ; }
+    git_restore() { $dotfiles restore --staged $HOME/. ; }
     ask git_restore
 }
 
 zsh_setup() {
-    bash "./scripts/zsh.sh"
+    bash "./zsh.sh"
 }
 
 vim_setup() {
-    bash "./scripts/neovim.sh"
+    bash "./neovim.sh"
+}
+
+ranger_setup() {
+    bash "./ranger.sh"
 }
 
 archlinux_setup() {
-    ask yay_setup
+    if [[ ! $(command -v pacman) ]]; then
+        ask yay_setup
+    fi
     ask yay_update
 }
 
 base() {
-    scripts_repo_setup
+    scripts_repo_resetup
 
     d=$(distro_determine)
 
@@ -86,6 +92,7 @@ base() {
     ask dots_setup
     ask zsh_setup
     ask vim_setup
+    ask ranger_setup
 }
 
-ask base
+base
