@@ -8,6 +8,7 @@ pacman_install="sudo pacman -S --needed"
 
 repo_name="linux-setup"
 repo_url="https://github.com/tsepanx/$repo_name"
+setup_script_location="scripts"
 
 dotfiles_url="https://github.com/tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
@@ -23,11 +24,12 @@ distro_determine() {
 
 scripts_repo_setup() {
     if [[ ! -d "scripts" ]]; then
-        git clone $repo_url ./$repo_name
-        echo "Entrying the same script with repo: $repo_url"
+        new_dir="$HOME/${repo_name}_$(date +'%Y%m%d_%H%M%S')"
+        git clone $repo_url $new_dir
+        echo "Entrying the same script with repo: $new_dir"
         sleep $sleep_interval
 
-        cd $repo_name
+        cd $new_dir/$setup_script_location
         bash setup.sh
         exit
     fi
