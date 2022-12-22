@@ -4,7 +4,6 @@ cd $(dirname $0)
 # source "./base.sh"
 
 sleep_interval=1
-pacman_install="sudo pacman -S --needed --noconfirm"
 
 # no_backups="$([[ $1 == "-nb" ]] && echo 1)"
 backup_dir="$HOME/backup"
@@ -17,19 +16,23 @@ setup_script_location="scripts/"
 dotfiles_url="git@github.com:tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
 
+install_needed() {
+    if [[ $(command -v pacman) ]]; then
+        if [[ ! $(pacman -Q $1 2>/dev/null) ]]; then
+            sudo pacman -S --needed --noconfirm $1
+        fi
+    fi
+}
+
 ask() {
     ask_string="${2}Continue? <$1> [s=skip]"
     echo -en "$ask_string"
-    read ask
-    # read -p "$ask_string" ask
+    read ask </dev/tty
 
     if [[ -z $ask || $ask == 'y' ]]; then
         $1
-        # out="$($1)"
-        # echo $out
     elif [[ $ask == 's' ]]; then
         echo Skipped
-        # echo -n "S"
         # sleep $sleep_interval
     else
         echo 'Exiting program'
@@ -39,7 +42,7 @@ ask() {
 
 
 backup() {
-    $pacman_install rsync
+    install_needed rsync
 
     [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
 
@@ -51,7 +54,6 @@ backup() {
     echo "Backing up $1 to $res_dirname"
     sleep $sleep_interval
 
-    # cp -r $1 $res_dirname
     rsync -rv --exclude=.git/ $1 $res_dirname
 }
 
@@ -79,12 +81,12 @@ scripts_repo_resetup() {
 
 yay_setup() {
     echo 'Installing yay'
-    $pacman_install base-devel
+    install_needed base-devel
     curl -L git.io/yay.sh | sh
 }
 
 dotfiles_base () {
-    $pacman_install git
+    install_needed git
     if [[ ! -d $dotfiles_dir ]]; then
         git clone --bare $dotfiles_url $dotfiles_dir
     fi
@@ -96,7 +98,7 @@ dotfiles_base () {
 }
 
 zsh_base () {
-    [[ $(command -v pacman) ]] && $pacman_install zsh
+    install_needed zsh
 
     dir="$HOME/.zsh"
     backup $dir
@@ -117,7 +119,7 @@ zsh_base () {
 
 
 neovim_base() {
-    [[ $(command -v pacman) ]] && $pacman_install neovim
+    install_needed neovim
 
     curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
