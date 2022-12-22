@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd $(dirname $0)
+
 sleep_interval=1
 
 fname1="./list-dotfiles"
@@ -30,5 +32,5 @@ git_add_from_list() {
 }
 
 git_add_from_list $fname1 $git_dir1 $git_url1
-git_add_from_list $fname2 $git_dir2 $git_url2
+# git_add_from_list $fname2 $git_dir2 $git_url2
 

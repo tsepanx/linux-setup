@@ -15,7 +15,8 @@ ask() {
         # out="$($1)"
         # echo $out
     elif [[ $ask == 's' ]]; then
-        echo -n "S"
+        echo Skipped
+        # echo -n "S"
         # sleep $sleep_interval
     else
         echo 'Exiting program'

@@ -3,9 +3,10 @@
 cd $(dirname $0)
 source "./base.sh"
 
-[[ $(command -v pacman) ]] && $pacman_install zsh
 
 zsh_base () {
+    [[ $(command -v pacman) ]] && $pacman_install zsh
+
     dir="$HOME/.zsh"
     backup $dir
     rm -rf $dir

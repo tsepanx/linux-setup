@@ -10,7 +10,8 @@ repo_name="linux-setup"
 repo_url="https://github.com/tsepanx/$repo_name"
 setup_script_location="scripts/"
 
-dotfiles_url="https://github.com/tsepanx/dotfiles"
+# dotfiles_url="https://github.com/tsepanx/dotfiles"
+dotfiles_url="git@github.com:tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
 
 distro_determine() {
@@ -41,12 +42,7 @@ yay_setup() {
     curl -L git.io/yay.sh | sh
 }
 
-#yay_update() {
-#    #TODO
-#    # yay -Syu
-#}
-
-dots_setup() {
+dotfiles_base () {
     $pacman_install git
     if [[ ! -d $dotfiles_dir ]]; then
         git clone --bare $dotfiles_url $dotfiles_dir
@@ -58,23 +54,72 @@ dots_setup() {
     ask git_restore
 }
 
-zsh_setup() {
-    bash "./zsh.sh"
+zsh_base () {
+    [[ $(command -v pacman) ]] && $pacman_install zsh
+
+    dir="$HOME/.zsh"
+    backup $dir
+    rm -rf $dir
+
+    git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.zsh
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-syntax-highlighting
+    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-autosuggestions
+
+    for f in .zshrc .alias_bash .alias_zsh .vars
+    do
+        backup "$HOME/$f"
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+    done
+
+    chsh -s /usr/bin/zsh
 }
 
-vim_setup() {
-    bash "./neovim.sh"
+
+neovim_base() {
+    [[ $(command -v pacman) ]] && $pacman_install neovim
+
+    curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+    for f in .vimrc
+    do
+        backup "$HOME/$f"
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+    done
+
+    mkdir -p $HOME/.config/nvim
+
+    nvimrc=$HOME/.config/nvim/init.vim
+    backup $nvimrc
+    rm $nvimrc
+
+    ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
+
+    nvim +PlugInstall +qall
 }
 
-ranger_setup() {
-    bash "./ranger.sh"
+
+ranger_base() {
+    dir=".config/ranger"
+
+    backup $HOME/$dir
+    rm -rf $HOME/$dir
+
+    mkdir -p $HOME/$dir/plugins
+
+    git clone https://github.com/alexanderjeurissen/ranger_devicons $HOME/$dir/plugins/ranger_devicons
+    git clone https://github.com/jchook/ranger-zoxide $HOME/$dir/plugins/zoxide
+
+    for f in $dir/rc.conf $dir/commands.py
+    do
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+    done
 }
+
 
 archlinux_setup() {
     if [[ ! $(command -v pacman) ]]; then
         ask yay_setup
     fi
-    ask yay_update
 }
 
 base() {
@@ -89,10 +134,11 @@ base() {
         exit
     fi
 
-    ask dots_setup
-    ask zsh_setup
-    ask vim_setup
-    ask ranger_setup
+    prefix="\nThis will override your current setup at:"
+    ask dotfiles_base "$prefix $dotfiles_dir\n"
+    ask zsh_base      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
+    ask neovim_base   "$prefix $HOME/{.vimrc}\n"
+    ask ranger_base   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
 }
 
 base
