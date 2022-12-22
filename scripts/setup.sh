@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $0)
-source ./ask.sh
+source "./base.sh"
 
 sleep_interval=1
 pacman_install="sudo pacman -S --needed"

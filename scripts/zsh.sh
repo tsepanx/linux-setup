@@ -3,7 +3,7 @@
 [[ $(command -v apt) ]] && sudo apt install -y zsh
 
 cd $(dirname $0)
-source "../base.sh"
+source "./base.sh"
 ask base "This will override your current setup at: $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
 
 base () {

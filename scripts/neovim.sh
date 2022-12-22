@@ -2,7 +2,7 @@
 [[ $(command -v apt) ]] && sudo apt install -y neovim
 
 cd $(dirname $0)
-source "../base.sh"
+source "./base.sh"
 ask base "This will override your current setup at: $HOME/{.vimrc}\n"
 
 curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
