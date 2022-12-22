@@ -2,22 +2,23 @@
 [[ $(command -v pacman) ]] && sudo pacman -S --needed --noconfirm zsh
 [[ $(command -v apt) ]] && sudo apt install -y zsh
 
-cd $HOME
+source "../base.sh"
+ask base "This will override your current setup at: $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
 
-mv -i .zshrc .zshrc-backup
-mv -i .zsh .zsh-backup
+base () {
+    backup "$HOME/.zsh"
 
-if [[ ! -d "$HOME/.zsh" ]]; then
     git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.zsh
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-syntax-highlighting
     git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-autosuggestions
-fi
 
-for f in .zshrc .alias_bash .alias_zsh .vars
-do
-    if [[ ! -f $f ]]
+    for f in .zshrc .alias_bash .alias_zsh .vars
+    do
+        backup "$HOME/$f"
         curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
-    fi
-done
+    done
 
-chsh -s /usr/bin/zsh
+    chsh -s /usr/bin/zsh
+}
+
+base

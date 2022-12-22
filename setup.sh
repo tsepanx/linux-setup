@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $0)
+source ./ask.sh
 
 sleep_interval=1
 pacman_install="sudo pacman -S --needed"
@@ -17,22 +18,6 @@ distro_determine() {
 
     if [[ -n $arch_s ]]; then
         echo archlinux
-    fi
-}
-
-ask() {
-    read -p "Continue? <$1> [s=skip]" ask
-
-    if [[ -z $ask || $ask == 'y' ]]; then
-        $1
-        # out="$($1)"
-        # echo $out
-    elif [[ $ask == 's' ]]; then
-        echo "Skipping <$1>"
-        # sleep $sleep_interval
-    else
-        echo 'Exiting program'
-        exit
     fi
 }
 
@@ -64,10 +49,10 @@ dots_setup() {
     if [[ ! -d $dotfiles_dir ]]; then
         git clone --bare $dotfiles_url $dotfiles_dir
     fi
-    $dotfiles="git --git-dir=$dotfiles_dir --work-tree=$HOME"
+    dotfiles="git --git-dir=$dotfiles_dir --work-tree=$HOME"
     $dotfiles config status.showUntrackedFiles no
 
-    git_restore() { $dotfiles restore . ; }
+    git_restore() { $dotfiles restore $HOME/. ; }
     ask git_restore
 }
 
