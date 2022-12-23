@@ -5,7 +5,7 @@ Collection of scripts to automatically install and configure my favourite softwa
 ### Quick start
 Just directly pipe the main `setup.sh` script, and follow all steps.
 ```bash
-curl https://raw.githubusercontent.com/tsepanx/linux-setup/master/scripts/curl.sh | bash
+curl https://raw.githubusercontent.com/tsepanx/linux-setup/master/curl.sh | bash
 ```
 
 ### Script interaction
