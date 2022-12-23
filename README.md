@@ -16,11 +16,17 @@ On waiting an answer from user, any other from `y` or empty input %%any other th
 
 ### Sections
 
+#### Packages installation
+My packages lists at `pkg-lists/` installation.
+1) Choose whether to install whole `base` list
+2) Choose specific packages from `extra` list
+3) Choose left lists to install as a whole
+
 #### Yay
-Installs `yay`, using `git.io/yay.sh` script
+Setup `yay`, using `git.io/yay.sh` script
 
 #### My Dotfiles
-git clones [my dotfiles repo](https://github.com/tsepanx/dotfiles) to `.dotfiles` as bare repository.
+git clones [my dotfiles repo](https://github.com/tsepanx/dotfiles) to `~/.dotfiles` as bare repository.
 
 #### Zsh
 - my shell-related config files.
@@ -35,11 +41,11 @@ git clones [my dotfiles repo](https://github.com/tsepanx/dotfiles) to `.dotfiles
 
 #### Neovim
 - my `.vimrc` config linked by `init.vim`
-- Installs plugins
+- Install plugins
 
 #### Ranger
-- my config files
-- plugins
+- my config files at `.config/ranger`
+- fresh plugins repos
     - `fzf_select`
     - `ranger_devicons`
     - `ranger-zoxide`
@@ -47,5 +53,4 @@ git clones [my dotfiles repo](https://github.com/tsepanx/dotfiles) to `.dotfiles
 
 ### TODO
 - Cp files from `./root` dir
-- Install packages from `./pkd-lists` dir
 - `systemctl enable --now --user mpd.socket`
