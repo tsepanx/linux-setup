@@ -3,7 +3,8 @@
 cd $(dirname $0)
 source "./base.sh"
 
-setup_script_location="scripts/"
+# setup_script_location="scripts"
+pkg_dir="./pkg-lists"
 base_file="./pkg-lists/base"
 extra_file="./pkg-lists/extra"
 
@@ -37,7 +38,7 @@ select_extra() {
 }
 
 select_other() {
-    for f in pkg-lists/*; do
+    for f in $pkg_dir/*; do
         if [[ -f $f && $(basename $f) != "base" && $(basename $f) != "extra" ]]; then
             # echo $f
             concat_f() { cat "$f" >> "$tmpfile" ; }
@@ -51,8 +52,6 @@ install_selected() {
 }
 
 main() {
-    d=$(distro_determine)
-
     if [[ -n $is_noconfirm ]]; then
         noconfirm_attempt
     fi
@@ -62,7 +61,7 @@ main() {
         ask_section yay_setup
     fi
 
-    rm list-20*
+    rm -v ${pkg_dir}/list-20*
     touch $tmpfile
 
     ask_section select_base

@@ -4,12 +4,11 @@ cd $(dirname $0)
 source "./base.sh"
 
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
-# [[ -n $is_noconfirm ]] && echo noconfirm
 backup_dir="$HOME/backup"
+pkg_install_file="./pkg-install.sh"
 
-setup_script_location="scripts/"
+# setup_script_location="scripts/"
 
-# dotfiles_url="https://github.com/tsepanx/dotfiles"
 dotfiles_url="git@github.com:tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
 
@@ -37,6 +36,10 @@ distro_determine() {
     if [[ -n $arch_s ]]; then
         echo archlinux
     fi
+}
+
+packages_install () {
+    bash $pkg_install_file
 }
 
 dotfiles_setup () {
@@ -127,6 +130,8 @@ main() {
     if [[ ! $(command -v yay) ]]; then
         ask_section yay_setup
     fi
+
+    ask_section packages_install
 
     prefix="\nThis will override your current setup at:"
     ask_section dotfiles_setup "$prefix $dotfiles_dir\n"
