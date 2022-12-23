@@ -8,8 +8,6 @@ sleep_interval=1
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 backup_dir="$HOME/backup"
 
-repo_name="linux-setup"
-repo_url="https://github.com/tsepanx/$repo_name"
 setup_script_location="scripts/"
 
 # dotfiles_url="https://github.com/tsepanx/dotfiles"
