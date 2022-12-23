@@ -109,7 +109,7 @@ zsh_setup () {
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-syntax-highlighting
     git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-autosuggestions
 
-    for f in .zshrc .alias_bash .alias_zsh .vars
+    for f in .bashrc .zshrc .alias_bash .alias_zsh .vars
     do
         backup "$HOME/$f"
         curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
