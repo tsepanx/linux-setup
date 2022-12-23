@@ -1,96 +1,54 @@
-zathura-pdf-mupdf
-udiskie
-picom
-iptables
-openresolv
-parcellite
-optipng jpegoptim
-dpkg
-rsync
-rclone
-autoconf automake libtool
-ffmpeg
-zsh
-zsh-autosuggestions
-zsh-syntax-highlighting
+base base-devel
+linux linux-firmware
 
-maim
-engrampa
-mutt
-whois
-
-ntfs-3g
-
-arandr
-leafpad
-zip unzip unrar
-
-veracrypt
-acpi
-alacritty
-bash-completion
-binwalk
-cmatrix
-conky
-curl
-
-dunst
-exa
-exiv2
-gdb
-gimp
-git
-gnupg
-gparted
-grub-customizer
-
-
-qemu
-newsboat
-bashtop
-simplescreenrecorder
-xreader
-mpd mpc ncmpcpp mpv
-xss-lock wmctrl
-
-youtube-dl
-keepassxc
-imagemagick
-flameshot
-
-amfora
-netcat
-net-tools
-screen
-openssh
-
-spice
-spice-gtk
-spice-vdagent
-
-
+grub efibootmgr
 os-prober
-dosfstools
-mtools
-trash-cli
-
-sxiv
-dmenu rofi dunst
-networkmanager
-network-manager-applet
-
-xsel neovim exa xclip
-dbus-glib dconf
+intel-ucode
 
 xf86-video-intel
-jq xz tor feh htop ncdu tree gvfs gvfs-mtp tlp
+xf86-input-libinput
+
+ntfs-3g
+udisks2 udiskie
+net-tools
+
 xorg xorg-xinit
+networkmanager
+
+jq
+git
+openssh
+vim xxd
+neovim
+htop
+ncdu
+fzf
+trash-cli
+xclip
+rsync
+
+which whois sudo
+bash-completion
+zsh
+tree
+tldr
 neofetch
-reflector
-lxappearance
-gparted
+exa
 
 ranger
+zoxide
 ueberzug
 
-wireguard-tools
+feh
+
+alacritty
+veracrypt
+
+mpd mpc mpv
+ncmpcpp
+ffmpeg
+
+cbatticon network-manager-applet
+parcellite
+arandr
+

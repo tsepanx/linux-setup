@@ -45,3 +45,7 @@ git clones [my dotfiles repo](https://github.com/tsepanx/dotfiles) to `.dotfiles
     - `ranger-zoxide`
 
 
+### TODO
+- Cp files from `./root` dir
+- Install packages from `./pkd-lists` dir
+- `systemctl enable --now --user mpd.socket`

@@ -1,9 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $0)
-# source "./base.sh"
-
-sleep_interval=1
+source "./base.sh"
 
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 # [[ -n $is_noconfirm ]] && echo noconfirm
@@ -14,37 +12,6 @@ setup_script_location="scripts/"
 # dotfiles_url="https://github.com/tsepanx/dotfiles"
 dotfiles_url="git@github.com:tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
-
-install_needed() {
-    if [[ $(command -v pacman) ]]; then
-        if [[ ! $(pacman -Q $1 2>/dev/null) ]]; then
-            sudo pacman -S --needed --noconfirm $1
-        fi
-    fi
-}
-
-ask() {
-    echo $1 | ./pretty-title.py
-
-    ask_string="${2}<$1> Continue? [y/<blank>=cont] "
-
-    if [[ -n $is_noconfirm ]]; then
-        $1
-        sleep 1
-        return
-    fi
-
-    echo -en "$ask_string"
-    read ask </dev/tty
-
-    if [[ -z $ask || $ask == 'y' ]]; then
-    # if [[ $ask == 'yes' ]]; then
-        $1
-        sleep 1
-    else
-        echo "--- Skipped ---"
-    fi
-}
 
 
 backup() {
@@ -69,17 +36,6 @@ distro_determine() {
 
     if [[ -n $arch_s ]]; then
         echo archlinux
-    fi
-}
-
-yay_setup() {
-    if [[ ! $(command -v yay) ]]; then
-        echo 'Installing yay'
-        install_needed setup-devel
-        curl -L git.io/yay.sh | sh
-    else
-        echo 'Yay already installed'
-        sleep 2
     fi
 }
 
@@ -160,7 +116,7 @@ ranger_setup() {
 }
 
 
-base() {
+main() {
     d=$(distro_determine)
 
     if [[ -n $is_noconfirm ]]; then
@@ -174,7 +130,9 @@ base() {
     fi
 
 
-    ask yay_setup
+    if [[ ! $(command -v yay) ]]; then
+        ask yay_setup
+    fi
 
     prefix="\nThis will override your current setup at:"
     ask dotfiles_setup "$prefix $dotfiles_dir\n"
@@ -183,4 +141,4 @@ base() {
     ask ranger_setup   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
 }
 
-base
+main
