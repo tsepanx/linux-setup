@@ -1,13 +1,12 @@
 #!/bin/bash
 
 cd $(dirname $0)
-source "./base.sh"
+source "./base.sh" $@
 
-is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
+args=$@
+
 backup_dir="$HOME/backup"
 pkg_install_file="./pkg-install.sh"
-
-# setup_script_location="scripts/"
 
 dotfiles_url="git@github.com:tsepanx/dotfiles"
 dotfiles_dir="$HOME/.dotfiles"
@@ -39,7 +38,7 @@ distro_determine() {
 }
 
 packages_install () {
-    bash $pkg_install_file
+    bash $pkg_install_file $args
 }
 
 dotfiles_setup () {

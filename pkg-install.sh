@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd $(dirname $0)
-source "./base.sh"
+source "./base.sh" $@
 
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 

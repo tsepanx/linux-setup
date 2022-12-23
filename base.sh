@@ -1,9 +1,11 @@
 #!/bin/bash
 
-
 cd $(dirname $0)
 
 sleep_interval=1
+
+# Go through every sectoin without interaction
+is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 
 yay_setup() {
     echo 'Installing yay'
