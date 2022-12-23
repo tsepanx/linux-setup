@@ -6,6 +6,7 @@ cd $(dirname $0)
 sleep_interval=1
 
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
+# [[ -n $is_noconfirm ]] && echo noconfirm
 backup_dir="$HOME/backup"
 
 setup_script_location="scripts/"
@@ -27,7 +28,11 @@ ask() {
 
     ask_string="${2}<$1> Continue? [y/<blank>=cont] "
 
-    [[ -n $is_noconfirm ]] && $1; return
+    if [[ -n $is_noconfirm ]]; then
+        $1
+        sleep 1
+        return
+    fi
 
     echo -en "$ask_string"
     read ask </dev/tty
