@@ -3,7 +3,8 @@
 cd $(dirname $0)
 source "./base.sh"
 
-# setup_script_location="scripts"
+is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
+
 pkg_dir="./pkg-lists"
 base_file="./pkg-lists/base"
 extra_file="./pkg-lists/extra"
