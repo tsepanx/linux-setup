@@ -5,7 +5,7 @@ cd $(dirname $0)
 
 sleep_interval=1
 
-# no_backups="$([[ $1 == "-nb" ]] && echo 1)"
+is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 backup_dir="$HOME/backup"
 
 repo_name="linux-setup"
@@ -25,18 +25,21 @@ install_needed() {
 }
 
 ask() {
-    ask_string="${2}Continue? <$1> [s=skip]"
+    echo $1 | ./pretty-title.py
+
+    ask_string="${2}<$1> Continue? [y/<blank>=cont] "
+
+    [[ -n $is_noconfirm ]] && $1; return
+
     echo -en "$ask_string"
     read ask </dev/tty
 
     if [[ -z $ask || $ask == 'y' ]]; then
+    # if [[ $ask == 'yes' ]]; then
         $1
-    elif [[ $ask == 's' ]]; then
-        echo Skipped
-        # sleep $sleep_interval
+        sleep 1
     else
-        echo 'Exiting program'
-        exit
+        echo "--- Skipped ---"
     fi
 }
 
@@ -66,38 +69,33 @@ distro_determine() {
     fi
 }
 
-scripts_repo_resetup() {
-    if [[ ! -f "./base.sh" ]]; then
-        new_dir="$HOME/${repo_name}_$(date +'%Y%m%d_%H%M%S')"
-        git clone $repo_url $new_dir
-        echo "Entrying the same script with repo: $new_dir"
-        sleep $sleep_interval
-
-        cd $new_dir/$setup_script_location
-        bash setup.sh
-        exit
-    fi
-}
-
 yay_setup() {
-    echo 'Installing yay'
-    install_needed base-devel
-    curl -L git.io/yay.sh | sh
+    if [[ ! $(command -v yay) ]]; then
+        echo 'Installing yay'
+        install_needed setup-devel
+        curl -L git.io/yay.sh | sh
+    else
+        echo 'Yay already installed'
+        sleep 2
+    fi
 }
 
-dotfiles_base () {
+dotfiles_setup () {
     install_needed git
-    if [[ ! -d $dotfiles_dir ]]; then
-        git clone --bare $dotfiles_url $dotfiles_dir
+
+    if [[ -d $dotfiles_dir ]]; then
+        backup $dotfiles_dir
+        rm -rf $dotfiles_dir
     fi
+
+    git clone --bare $dotfiles_url $dotfiles_dir
+
     dotfiles="git --git-dir=$dotfiles_dir --work-tree=$HOME"
     $dotfiles config status.showUntrackedFiles no
-
-    git_restore() { $dotfiles restore --staged $HOME/. ; }
-    ask git_restore
+    $dotfiles restore --staged $HOME/.
 }
 
-zsh_base () {
+zsh_setup () {
     install_needed zsh
 
     dir="$HOME/.zsh"
@@ -118,7 +116,7 @@ zsh_base () {
 }
 
 
-neovim_base() {
+neovim_setup() {
     install_needed neovim
 
     curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -141,7 +139,7 @@ neovim_base() {
 }
 
 
-ranger_base() {
+ranger_setup() {
     dir=".config/ranger"
 
     backup $HOME/$dir
@@ -159,29 +157,27 @@ ranger_base() {
 }
 
 
-archlinux_setup() {
-    if [[ ! $(command -v pacman) ]]; then
-        ask yay_setup
-    fi
-}
-
 base() {
-    # scripts_repo_resetup
-
     d=$(distro_determine)
 
-    if [[ -n $d ]]; then
-        ask "$(echo $d)_setup"
-    else
-        echo 'Distro not allowed :('
-        exit
+    if [[ -n $is_noconfirm ]]; then
+        echo "You are entering NO_CONFIRM mode. Are you sure?"
+        echo "It means that you won't be prompted for any interaction, and all sections will be applied"
+        sleep 5
+        echo -n "Write 'yes', if you know what are you doing: [yes/no] "
+
+        read ask </dev/tty
+        [[ $ask != "yes" ]] && exit;
     fi
 
+
+    ask yay_setup
+
     prefix="\nThis will override your current setup at:"
-    ask dotfiles_base "$prefix $dotfiles_dir\n"
-    ask zsh_base      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
-    ask neovim_base   "$prefix $HOME/{.vimrc}\n"
-    ask ranger_base   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
+    ask dotfiles_setup "$prefix $dotfiles_dir\n"
+    ask zsh_setup      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
+    ask neovim_setup   "$prefix $HOME/{.vimrc}\n"
+    ask ranger_setup   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
 }
 
 base
