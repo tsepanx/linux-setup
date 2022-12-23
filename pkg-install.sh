@@ -4,10 +4,10 @@ cd $(dirname $0)
 source "./base.sh"
 
 setup_script_location="scripts/"
-base_list_path="./pkg-lists/base"
-extra_list_path="./pkg-lists/extra"
+base_file="./pkg-lists/base"
+extra_file="./pkg-lists/extra"
 
-tmp_extra_to_install="./pkg-lists/extra-$(date +'%Y%m%d_%H%M%S')"
+tmpfile="./pkg-lists/list-$(date +'%Y%m%d_%H%M%S')"
 
 install_needed() {
     if [[ $(command -v yay) ]]; then
@@ -19,77 +19,64 @@ install_needed() {
     $cmd -Sy --needed $@
 }
 
-ask() {
-    echo $1 | ./pretty-title.py
-
-    ask_string="${2}<$1> Continue? [y/<blank>=cont] "
-
-    if [[ -n $is_noconfirm ]]; then
-        $1
-        sleep 1
-        return
-    fi
-
-    echo -en "$ask_string"
-    read ask </dev/tty
-
-    if [[ -z $ask || $ask == 'y' ]]; then
-    # if [[ $ask == 'yes' ]]; then
-        $1
-        sleep 1
-    else
-        echo "--- Skipped ---"
-    fi
+select_base() {
+    echo "Entire $base_file file is included:"
+    sleep $sleep_interval
+    cat $base_file
+    cat $base_file >> $tmpfile
 }
 
-
-
-install_base() {
-    install_needed $(cat $base_list_path)
-}
-
-install_extra() {
-    touch $tmp_extra_to_install
+select_extra() {
+    touch $tmpfile
     while IFS= read -r line; do
         if [[ -n $line ]]; then
-            echo -n "Install [$line] [y=yes]?"
-            read -N 1 ask </dev/tty
-            echo
-
-            if [[ $ask == 'y' ]]; then
-                echo "$line" >> "$tmp_extra_to_install"
-            fi
+            add_line() { echo "$line" >> "$tmpfile" ; }
+            ask "Include pkg: [$line]?" add_line
         fi
-    done < $extra_list_path
+    done < $extra_file
+}
 
-    echo Result list:
-    cat $tmp_extra_to_install
-    echo
+select_other() {
+    for f in pkg-lists/*; do
+        if [[ -f $f && $(basename $f) != "base" && $(basename $f) != "extra" ]]; then
+            # echo $f
+            concat_f() { cat "$f" >> "$tmpfile" ; }
+            ask "Include file: [$f]?" concat_f
+        fi
+    done
+}
 
-    install_needed $(cat $tmp_extra_to_install)
-    rm $tmp_extra_to_install
+install_selected() {
+    install_needed $(cat $tmpfile)
 }
 
 main() {
     d=$(distro_determine)
 
     if [[ -n $is_noconfirm ]]; then
-        echo "You are entering NO_CONFIRM mode. Are you sure?"
-        echo "It means that you won't be prompted for any interaction, and all sections will be applied"
-        sleep 5
-        echo -n "Write 'yes', if you know what are you doing: [yes/no] "
-
-        read ask </dev/tty
-        [[ $ask != "yes" ]] && exit;
+        noconfirm_attempt
     fi
 
 
     if [[ ! $(command -v yay) ]]; then
-        ask yay_setup
+        ask_section yay_setup
     fi
 
-    # ask install_base
-    ask install_extra
+    rm list-20*
+    touch $tmpfile
+
+    ask_section select_base
+    ask_section select_extra
+    ask_section select_other
+
+    echo "Result list:"
+    sleep $sleep_interval
+
+    cat $tmpfile
+    sleep $sleep_interval
+
+    ask_section install_selected
+    rm $tmpfile
 }
 
 main

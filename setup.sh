@@ -120,25 +120,19 @@ main() {
     d=$(distro_determine)
 
     if [[ -n $is_noconfirm ]]; then
-        echo "You are entering NO_CONFIRM mode. Are you sure?"
-        echo "It means that you won't be prompted for any interaction, and all sections will be applied"
-        sleep 5
-        echo -n "Write 'yes', if you know what are you doing: [yes/no] "
-
-        read ask </dev/tty
-        [[ $ask != "yes" ]] && exit;
+        noconfirm_attempt
     fi
 
 
     if [[ ! $(command -v yay) ]]; then
-        ask yay_setup
+        ask_section yay_setup
     fi
 
     prefix="\nThis will override your current setup at:"
-    ask dotfiles_setup "$prefix $dotfiles_dir\n"
-    ask zsh_setup      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
-    ask neovim_setup   "$prefix $HOME/{.vimrc}\n"
-    ask ranger_setup   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
+    ask_section dotfiles_setup "$prefix $dotfiles_dir\n"
+    ask_section zsh_setup      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
+    ask_section neovim_setup   "$prefix $HOME/{.vimrc}\n"
+    ask_section ranger_setup   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
 }
 
 main
