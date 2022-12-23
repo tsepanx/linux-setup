@@ -11,16 +11,6 @@ extra_file="./pkg-lists/extra"
 
 tmpfile="./pkg-lists/list-$(date +'%Y%m%d_%H%M%S')"
 
-install_needed() {
-    if [[ $(command -v yay) ]]; then
-        cmd=yay
-    else
-        cmd=pacman
-    fi
-
-    $cmd -Sy --needed $@
-}
-
 select_base() {
     echo "Entire $base_file file is included:"
     sleep $sleep_interval

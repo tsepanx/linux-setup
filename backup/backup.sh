@@ -24,11 +24,15 @@ git_add_from_list() {
         sleep $sleep_interval
     fi
 
+    git="git --git-dir=$git_dir --work-tree=$HOME"
 
     while IFS= read -r line; do
         echo "$filename: git add $line"
-        git --git-dir=$git_dir --work-tree=$HOME add "$HOME/$line"
+        $git add "$HOME/$line"
     done < "$filename"
+
+    echo "Pushing $git_url"
+    $git push
 }
 
 git_add_from_list $fname1 $git_dir1 $git_url1
