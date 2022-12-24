@@ -48,6 +48,7 @@ mpd mpc mpv
 ncmpcpp
 ffmpeg
 
+dunst
 cbatticon network-manager-applet
 parcellite
 arandr

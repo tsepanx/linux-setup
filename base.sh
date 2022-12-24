@@ -2,7 +2,7 @@
 
 cd $(dirname $0)
 
-sleep_interval=1
+sleep_interval=0.5
 
 # Go through every sectoin without interaction
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
@@ -26,19 +26,19 @@ install_needed() {
 rstr="[y/<blank> = yes] "
 
 ask() {
-    echo -en "$1 $rstr"
+    echo -en "$2 $rstr"
     read -n 1 ask </dev/tty
     echo
 
     if [[ -z $ask || $ask == 'y' ]]; then
-        $2
+        $1
     fi
 }
 
 ask_section() {
     echo $1 | ./pretty-title.py
 
-    ask_string="${2}Continue? $rstr"
+    ask_string="${2}\nSecion <$1> Continue? $rstr"
 
     if [[ -n $is_noconfirm ]]; then
         $1

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-cd $(dirname $0)
-source "./base.sh" $@
+dir=$(dirname $0)
+source "$dir/base.sh" $@
+cd $dir
 
 args=$@
 
@@ -97,6 +98,21 @@ neovim_setup() {
     ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
 
     nvim +PlugInstall +qall
+
+    ycm_setup() {
+        install_needed cmake
+
+        plug_dir=$HOME/.vim/plugged/
+        mkdir -p $plug_dir
+        cd $plug_dir
+
+        git clone https://github.com/Valloric/YouCompleteMe
+        cd YouCompleteMe
+
+        # ./install.py --clangd-completer
+        ./install.py --clang-completer
+    }
+    ask ycm_setup "Install YouCompleteMe additionally?"
 }
 
 
@@ -133,10 +149,10 @@ main() {
     ask_section packages_install
 
     prefix="\nThis will override your current setup at:"
-    ask_section dotfiles_setup "$prefix $dotfiles_dir\n"
-    ask_section zsh_setup      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}\n"
-    ask_section neovim_setup   "$prefix $HOME/{.vimrc}\n"
-    ask_section ranger_setup   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}\n"
+    ask_section dotfiles_setup "$prefix $dotfiles_dir"
+    ask_section zsh_setup      "$prefix $HOME/{.zsh/,.zshrc,.alias_bash,.alias_zsh,.vars}"
+    ask_section neovim_setup   "$prefix $HOME/{.vimrc}"
+    ask_section ranger_setup   "$prefix $HOME/.config{plugins/,rc.conf,commands.py}"
 }
 
 main

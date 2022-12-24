@@ -1,7 +1,8 @@
 #!/bin/bash
 
-cd $(dirname $0)
-source "./base.sh" $@
+dir=$(dirname $0)
+source "$dir/base.sh" $@
+cd $dir
 
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 
@@ -23,7 +24,7 @@ select_extra() {
     while IFS= read -r line; do
         if [[ -n $line ]]; then
             add_line() { echo "$line" >> "$tmpfile" ; }
-            ask "Include pkg: [$line]?" add_line
+            ask add_line "Include pkg: [$line]?"
         fi
     done < $extra_file
 }
@@ -33,7 +34,7 @@ select_other() {
         if [[ -f $f && $(basename $f) != "base" && $(basename $f) != "extra" ]]; then
             # echo $f
             concat_f() { cat "$f" >> "$tmpfile" ; }
-            ask "Include file: [$f]?" concat_f
+            ask concat_f "Include file: [$f]?"
         fi
     done
 }
