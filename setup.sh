@@ -100,7 +100,7 @@ neovim_setup() {
     nvim +PlugInstall +qall
 
     ycm_setup() {
-        install_needed cmake
+        install_needed cmake python-pynvim
 
         plug_dir=$HOME/.vim/plugged/
         mkdir -p $plug_dir
