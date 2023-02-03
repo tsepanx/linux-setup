@@ -11,6 +11,7 @@ xf86-input-libinput
 ntfs-3g
 udisks2 udiskie
 net-tools
+acpi
 
 xorg xorg-xinit
 networkmanager

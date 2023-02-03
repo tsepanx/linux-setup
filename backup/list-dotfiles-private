@@ -1,3 +1,4 @@
 .ssh/
 .gnupg/
-
+.mozilla/
+.mpd/playlists

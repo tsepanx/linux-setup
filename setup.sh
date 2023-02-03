@@ -112,7 +112,7 @@ neovim_setup() {
         # ./install.py --clangd-completer
         ./install.py --clang-completer
     }
-    ask ycm_setup "Install YouCompleteMe additionally?"
+    ask ycm_setup "Install 'YouCompleteMe' plugin additionally?"
 }
 
 
