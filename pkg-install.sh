@@ -1,8 +1,8 @@
 #!/bin/bash
 
-dir=$(dirname $0)
-source "$dir/base.sh" $@
-cd $dir
+dir=$(dirname "$0")
+source "$dir/base.sh" "$@"
+cd "$dir" || exit
 
 is_noconfirm="$([[ $1 == "-y" ]] && echo 1)"
 
@@ -20,7 +20,7 @@ select_base() {
 }
 
 select_extra() {
-    touch $tmpfile
+    touch "$tmpfile"
     while IFS= read -r line; do
         if [[ -n $line ]]; then
             add_line() { echo "$line" >> "$tmpfile" ; }
@@ -40,7 +40,7 @@ select_other() {
 }
 
 install_selected() {
-    install_needed $(cat $tmpfile)
+    install_needed "$(cat "$tmpfile")"
 }
 
 main() {
@@ -54,20 +54,20 @@ main() {
     fi
 
     rm -v ${pkg_dir}/list-20*
-    touch $tmpfile
+    touch "$tmpfile"
 
     ask_section select_base
     ask_section select_extra
     ask_section select_other
 
     echo "Result list:"
-    sleep $sleep_interval
+    sleep "$sleep_interval"
 
-    cat $tmpfile
-    sleep $sleep_interval
+    cat "$tmpfile"
+    sleep "$sleep_interval"
 
     ask_section install_selected
-    rm $tmpfile
+    rm "$tmpfile"
 }
 
 main

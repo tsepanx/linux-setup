@@ -4,12 +4,18 @@
 # ------------------------   SOME WORDS   -------------------------- #
 ######################################################################
 
-s = input()
+input_str = input()
 
-def main(s, l=80, mg=6, upper=True):
-    bd = lambda x: f'# {x * "-"}{mg}'    
 
-    cnt = l - ( len(s) + mg * 2 + 4 )
+def gen_string(
+        s: str,
+        l: int = 80,
+        mg: int = 6,
+        upper=True
+) -> str:
+    bd = lambda x: f'# {x * "-"}{mg}'
+
+    cnt = l - (len(s) + mg * 2 + 4)
     cnt //= 2
 
     up = '#' * l
@@ -21,8 +27,9 @@ def main(s, l=80, mg=6, upper=True):
     lb = bd(cnt)
     rb = bd(cnt + int(len(s) % 2))[::-1]
 
-    mid = lb + title + rb 
+    mid = lb + title + rb
 
     return '\n'.join([up, mid, dn])
 
-print(main(s))
+
+print(gen_string(input_str))

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd $(dirname $0)
+cd "$(dirname "$0")" || exit
 
 sleep_interval=0.5
 
@@ -20,7 +20,7 @@ install_needed() {
         cmd=pacman
     fi
 
-    $cmd -Sy --needed $@
+    $cmd -Sy --needed "$@"
 }
 
 rstr="[y/<blank> = yes] "

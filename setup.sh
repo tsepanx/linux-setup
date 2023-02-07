@@ -1,8 +1,8 @@
 #!/bin/bash
 
-dir=$(dirname $0)
-source "$dir/base.sh" $@
-cd $dir
+dir=$(dirname "$0")
+source "$dir/base.sh" "$@"
+cd "$dir" || exit
 
 args=$@
 
@@ -16,17 +16,17 @@ dotfiles_dir="$HOME/.dotfiles"
 backup() {
     install_needed rsync
 
-    [[ ! -d $backup_dir ]] && mkdir -p $backup_dir
+    [[ ! -d $backup_dir ]] && mkdir -p "$backup_dir"
 
-    res_dirname="$backup_dir$(dirname $1)"
+    res_dirname="$backup_dir$(dirname "$1")"
     if [[ ! -d $res_dirname ]]; then
-        mkdir -p $res_dirname
+        mkdir -p "$res_dirname"
     fi
 
     echo "Backing up $1 to $res_dirname"
     sleep $sleep_interval
 
-    rsync -rv --exclude=.git/ $1 $res_dirname
+    rsync -rv --exclude=.git/ "$1" "$res_dirname"
 }
 
 distro_determine() {
@@ -39,22 +39,22 @@ distro_determine() {
 }
 
 packages_install () {
-    bash $pkg_install_file $args
+    bash $pkg_install_file "$args"
 }
 
 dotfiles_setup () {
     install_needed git
 
     if [[ -d $dotfiles_dir ]]; then
-        backup $dotfiles_dir
-        rm -rf $dotfiles_dir
+        backup "$dotfiles_dir"
+        rm -rf "$dotfiles_dir"
     fi
 
-    git clone --bare $dotfiles_url $dotfiles_dir
+    git clone --bare $dotfiles_url "$dotfiles_dir"
 
     dotfiles="git --git-dir=$dotfiles_dir --work-tree=$HOME"
     $dotfiles config status.showUntrackedFiles no
-    $dotfiles restore --staged $HOME/.
+    $dotfiles restore --staged "$HOME/."
 }
 
 zsh_setup () {
@@ -65,13 +65,13 @@ zsh_setup () {
     rm -rf $dir
 
     git clone https://github.com/robbyrussell/oh-my-zsh.git ~/.zsh
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-syntax-highlighting
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.zsh/custom}/plugins/zsh-autosuggestions
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.zsh/custom}"/plugins/zsh-syntax-highlighting
+    git clone https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.zsh/custom}"/plugins/zsh-autosuggestions
 
     for f in .bashrc .zshrc .alias_bash .alias_zsh .vars
     do
         backup "$HOME/$f"
-        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o "$HOME"/$f
     done
 
     chsh -s /usr/bin/zsh
@@ -86,14 +86,14 @@ neovim_setup() {
     for f in .vimrc
     do
         backup "$HOME/$f"
-        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o "$HOME"/$f
     done
 
-    mkdir -p $HOME/.config/nvim
+    mkdir -p "$HOME"/.config/nvim
 
     nvimrc=$HOME/.config/nvim/init.vim
-    backup $nvimrc
-    rm $nvimrc
+    backup "$nvimrc"
+    rm "$nvimrc"
 
     ln -s $HOME/.vimrc $HOME/.config/nvim/init.vim
 
@@ -103,11 +103,11 @@ neovim_setup() {
         install_needed cmake python-pynvim
 
         plug_dir=$HOME/.vim/plugged/
-        mkdir -p $plug_dir
-        cd $plug_dir
+        mkdir -p "$plug_dir"
+        cd "$plug_dir" || exit
 
         git clone https://github.com/Valloric/YouCompleteMe
-        cd YouCompleteMe
+        cd YouCompleteMe || exit
 
         # ./install.py --clangd-completer
         ./install.py --clang-completer
@@ -120,16 +120,16 @@ ranger_setup() {
     dir=".config/ranger"
 
     backup $HOME/$dir
-    rm -rf $HOME/$dir
+    rm -rf "${HOME:?}"/$dir
 
-    mkdir -p $HOME/$dir/plugins
+    mkdir -p "$HOME"/$dir/plugins
 
-    git clone https://github.com/alexanderjeurissen/ranger_devicons $HOME/$dir/plugins/ranger_devicons
-    git clone https://github.com/jchook/ranger-zoxide $HOME/$dir/plugins/zoxide
+    git clone https://github.com/alexanderjeurissen/ranger_devicons "$HOME"/$dir/plugins/ranger_devicons
+    git clone https://github.com/jchook/ranger-zoxide "$HOME"/$dir/plugins/zoxide
 
     for f in $dir/rc.conf $dir/commands.py
     do
-        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o $HOME/$f
+        curl https://raw.githubusercontent.com/tsepanx/dotfiles/master/$f -o "$HOME"/$f
     done
 }
 
