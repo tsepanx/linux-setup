@@ -1,0 +1,15 @@
+polkit.addRule(function(action, subject) {
+    if (action.id == "org.freedesktop.systemd1.manage-units") {
+        if (action.lookup("unit").includes("dns_server")) {
+            var verb = action.lookup("verb");
+            polkit.log(verb);
+            if (verb == "start" || verb == "restart" || verb == "enable") {
+                return polkit.Result.YES;
+            }
+            return polkit.Result.NO;
+        }
+    }
+    if (action.id == "org.freedesktop.systemd1.manage-unit-files") {
+        return polkit.Result.NO;
+    }
+});

@@ -11,6 +11,7 @@ xf86-input-libinput
 ntfs-3g
 udisks2 udiskie
 net-tools
+openresolv
 acpi
 
 xorg xorg-xinit
@@ -54,3 +55,5 @@ cbatticon network-manager-applet
 parcellite
 arandr
 
+dnsutils
+inetutils

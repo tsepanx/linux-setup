@@ -1,0 +1,13 @@
+[Unit]
+Description=My Python DNS Server
+After=multi-user.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/void/gh/dns_server
+ExecStart=/bin/bash -c 'source .venv/bin/activate && python /home/void/gh/dns_server/src/main.py'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

@@ -1,0 +1,4 @@
+
+%void ALL= NOPASSWD: !/bin/systemctl *disable* python_dns_server*
+%void ALL= NOPASSWD: !/bin/systemctl *stop* python_dns_server*
+
