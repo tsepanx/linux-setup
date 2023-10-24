@@ -1,7 +1,8 @@
 version: '3.8'
 
 services:
-  db:
+  nc_db:
+    container_name: nc_db
     image: postgres:latest
     environment:
       POSTGRES_DB: nc
@@ -11,15 +12,16 @@ services:
       - /media/st/.docker/pg:/var/lib/postgresql/data
 
 
-  nc_service:
+  nc_main:
+    container_name: nc_main
     image: nextcloud:latest
     environment:
-      POSTGRES_HOST: db
+      POSTGRES_HOST: nc_db
       POSTGRES_DB: nc
       POSTGRES_USER: nc_user
       POSTGRES_PASSWORD: nc_password
     links:
-      - db
+      - nc_db
     ports:
       - 8081:80
     volumes:

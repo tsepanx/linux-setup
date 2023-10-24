@@ -1,0 +1,13 @@
+[Unit]
+Description=Docker-compose delayed startup
+
+[Service]
+Type=simple
+; ExecStartPre=/bin/sleep 30
+ExecStart=/home/pi/linux-setup/rpi/scripts/docker_nc_restart.sh
+Restart=no
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+
