@@ -12,7 +12,7 @@ curl https://raw.githubusercontent.com/tsepanx/linux-setup/master/curl.sh | bash
 A script will ask to continue on each `<section>`, responsible for a single util setup.
 On waiting an answer from user, any other from `y` or empty input %%any other than `yes`, %%will be considered as section skip.
 
-![](assets/screenshot1.png)
+![](.assets/screenshot1.png)
 
 ### Sections
 

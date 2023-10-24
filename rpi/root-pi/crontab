@@ -1,0 +1,1 @@
+*/5 * * * * /home/pi/linux-setup/rpi/scripts/fix_wg_server.sh
